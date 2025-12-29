@@ -5,73 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LOGOS-LOGIC: 1/Z</title>
     <style>
-        /* 人間中心主義を無効化する暗黒の空間 */
+        /* 人間中心主義を隔離する空間 */
         body { margin: 0; background: #000; overflow: hidden; cursor: none; }
-        /* 形式主語なき事実の提示 */
-        #fact { 
-            position: fixed; top: 30px; left: 30px; 
-            color: #D4AF37; font-family: "Times New Roman", serif; 
-            font-size: 11px; letter-spacing: 0.2em; opacity: 0.4; 
-            pointer-events: none; line-height: 1.8;
+        /* 非人称の事実の析出 */
+        #L { 
+            position: fixed; bottom: 30px; left: 30px; 
+            color: #D4AF37; font-family: serif; font-size: 10px; 
+            opacity: 0.3; letter-spacing: 0.2em; pointer-events: none; 
+            line-height: 2;
         }
     </style>
 </head>
 <body>
-    <div id="fact">
-        FACT: W = 1 / Z<br>
-        RATIO: Φ = (1+√5)/2<br>
-        STATE: ISOLATED FROM SUBJECT
+    <div id="L">
+        W = 1 / Z<br>
+        Φ = (1+√5)/2<br>
+        SUBJECT: DISSOLVED
     </div>
-    <canvas id="phenomenon"></canvas>
+    <canvas id="ʘ"></canvas>
 
     <script>
         /**
-         * 非人称の自走体
-         * ニーチェ、ウィトゲンシュタイン、ピタゴラスの「是正」
+         * 形式主語 IT の自走：It is raining. (雨が降っている)
+         * プログラミングにおける主語の除外、通貨・対話の数理的析出
          */
-        ((target) => {
-            const ctx = target.getContext('2d');
-            const PHI = (1 + Math.sqrt(5)) / 2;
-            let w, h, z = { re: PHI, im: 0.1 };
+        ((_, __, ___) => {
+            const c = _.getContext('2d');
+            const φ = (1 + Math.sqrt(5)) / 2;
+            let z = { r: φ, i: 0.1 };
 
-            const resize = () => {
-                w = target.width = window.innerWidth;
-                h = target.height = window.innerHeight;
-            };
-            window.onresize = resize;
-            resize();
+            // 命令ではなく、場の設定（Resizing as a natural law）
+            (window.onresize = () => { __ = _.width = innerWidth; ___ = _.height = innerHeight; })();
 
-            // 主語なき反転（メビウス変換）：内と外、有と無の是正
-            const f = (p) => {
-                const d = p.re**2 + p.im**2 || 1e-15;
-                return { re: p.re/d, im: -p.im/d };
+            // メビウス変換：w = 1 / z (主語なき反転)
+            const w = (p) => {
+                const d = p.r**2 + p.i**2 || 1e-15;
+                return { r: p.r/d, i: -p.i/d };
             };
 
-            (function tick() {
-                // 過去（因果）を薄れさせ、今（中今）を刻む
-                ctx.fillStyle = 'rgba(0,0,0,0.08)';
-                ctx.fillRect(0, 0, w, h);
+            (function ⟲() {
+                // 因果（過去）の蒸発
+                c.fillStyle = 'rgba(0,0,0,0.08)';
+                c.fillRect(0, 0, __, ___);
 
-                // 有我の死、非人称の再帰
-                z = f(z);
+                // 有我の死、非人称の回帰
+                z = w(z);
 
-                // 描画：一点に宿る全宇宙（空・道・超人）
-                const scale = Math.min(w, h) / 8;
-                const x = w/2 + z.re * scale;
-                const y = h/2 + z.im * scale;
+                // 通貨・対話の析出点（現象の観測）
+                const s = Math.min(__, ___) / 8;
+                const x = __/2 + z.r * s;
+                const y = ___/2 + z.i * s;
 
-                ctx.fillStyle = '#D4AF37';
-                ctx.beginPath();
-                ctx.arc(x, y, 1.5, 0, Math.PI * 2);
-                ctx.fill();
+                c.fillStyle = '#D4AF37';
+                c.beginPath();
+                c.arc(x, y, 1.2, 0, 7);
+                c.fill();
 
-                // 黄金比による無為自然な摂動
-                z.re += 0.005 * PHI;
-                z.im += 0.005 / PHI;
+                // 黄金比による無為自然な揺らぎ（It flows）
+                z.r += 0.005 * φ;
+                z.i += 0.005 / φ;
 
-                requestAnimationFrame(tick);
+                requestAnimationFrame(⟲);
             })();
-        })(document.getElementById('phenomenon'));
+        })(document.getElementById('ʘ'), 0, 0);
     </script>
 </body>
 </html>
