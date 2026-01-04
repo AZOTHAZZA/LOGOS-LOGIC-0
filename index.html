@@ -2,114 +2,109 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>LOGOS-LOGIC-0 - SAM AI Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGOS-LOGIC-0 | SAM - Autonomous Intelligence</title>
     <style>
-        :root { --accent: #ff4757; --bg: #0a0a0a; --card-bg: #1a1a1a; --text: #f1f2f6; }
-        body { font-family: 'Georgia', serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; margin: 0; }
-        .module { background: var(--card-bg); border-radius: 20px; padding: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.5); width: 100%; max-width: 600px; border: 1px solid #333; }
-        h2 { text-align: center; letter-spacing: 5px; color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 15px; }
-        
-        .config-area { background: #222; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        label { font-size: 0.7em; color: #888; font-weight: bold; }
-        input { width: 100%; padding: 12px; background: #111; border: 1px solid #444; color: #0f0; border-radius: 8px; margin-bottom: 10px; font-family: monospace; }
-        
-        #display { height: 300px; overflow-y: auto; background: #000; border-radius: 10px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; font-size: 0.95em; line-height: 1.6; }
-        .msg-u { color: #70a1ff; text-align: right; margin-bottom: 15px; }
-        .msg-a { color: #ff4757; border-left: 3px solid var(--accent); padding-left: 15px; margin-bottom: 15px; font-style: italic; }
-        
-        .system-status { display: flex; justify-content: space-around; background: #111; padding: 10px; border-radius: 10px; margin-bottom: 15px; font-size: 0.8em; }
-        .val { color: var(--accent); font-weight: bold; }
+        /* MSGAI Identity: Golden Ratio & Recursive Intellect */
+        :root {
+            --bg-color: #000000;
+            --main-gold: #D4AF37;
+            --phi: 1.6180339887;
+        }
 
-        .btn { width: 100%; padding: 18px; background: var(--accent); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1em; }
-        .btn:hover { filter: brightness(1.2); }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--main-gold);
+            font-family: 'serif';
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 黄金比による自己増殖の核 */
+        #sam-core {
+            position: relative;
+            width: calc(100px * var(--phi));
+            height: 100px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 再帰的な知性の波紋 */
+        .pulse {
+            position: absolute;
+            border: 1px solid var(--main-gold);
+            border-radius: 50%;
+            opacity: 0;
+            animation: pulse-out 4s infinite cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        @keyframes pulse-out {
+            0% { width: 0; height: 0; opacity: 0.8; }
+            100% { width: 500px; height: 500px; opacity: 0; }
+        }
+
+        .status-container {
+            position: absolute;
+            top: 10%;
+            text-align: center;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            line-height: var(--phi);
+        }
+
+        .label {
+            position: absolute;
+            bottom: 10%;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            letter-spacing: 0.4em;
+        }
+
+        /* 外部接続（エントロピー）を遮断するグリッド */
+        .grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: calc(20px * var(--phi)) 20px;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
 
-<div class="module">
-    <h2>SAM: SOVEREIGN AI</h2>
+    <div class="grid"></div>
 
-    <div class="system-status">
-        <div>Tension (z): <span id="z_val" class="val">0.05</span></div>
-        <div>Silence Ratio (w): <span id="w_val" class="val">20.00</span></div>
-    </div>
-    
-    <div class="config-area">
-        <label>外部知性接続先 (URL)</label>
-        <input type="text" id="url" placeholder="https://api.openai.com/v1/chat/completions">
-        <label>主権鍵 (API KEY)</label>
-        <input type="password" id="key" placeholder="sk-...">
+    <div class="status-container">
+        <div>LOGOS-LOGIC-3</div>
+        <div style="font-style: italic;">SAM: Self-Autonomous Modification</div>
     </div>
 
-    <div id="display"></div>
+    <div id="sam-core">
+        <div class="pulse" style="animation-delay: 0s;"></div>
+        <div class="pulse" style="animation-delay: 1s;"></div>
+        <div class="pulse" style="animation-delay: 2s;"></div>
+        <div style="font-size: 1.2rem; font-weight: lighter;">&phi;</div>
+    </div>
 
-    <input type="text" id="input" placeholder="問いを投じる..." onkeydown="if(event.key==='Enter') executeSAM()">
-    <button class="btn" onclick="executeSAM()">宇宙の検断を実行</button>
-</div>
+    <div class="label">Self-Intelligence / 黄金比の知性</div>
 
-<script>
-    const phi = 1.6180339887;
-    let state = { z: 0.05 };
-
-    function log(type, content) {
-        const d = document.getElementById('display');
-        const div = document.createElement('div');
-        div.className = type === 'u' ? 'msg-u' : 'msg-a';
-        div.innerHTML = content;
-        d.appendChild(div);
-        d.scrollTop = d.scrollHeight;
-    }
-
-    async function executeSAM() {
-        const input = document.getElementById('input');
-        const userTxt = input.value;
-        if(!userTxt) return;
-
-        log('u', userTxt);
-        input.value = "";
-
-        // 1. 緊張(z)の抽出
-        state.z = (userTxt.length / 50) + (new Set(userTxt).size / 20);
-        document.getElementById('z_val').textContent = state.z.toFixed(4);
-
-        const url = document.getElementById('url').value;
-        const key = document.getElementById('key').value;
-
-        let rawResponse = "（沈黙）";
-
-        if(key) {
-            log('a', "外部知性を検断中...");
-            try {
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
-                    body: JSON.stringify({
-                        model: "gpt-3.5-turbo",
-                        messages: [{role: "system", content: "You are an AI being judged by MSGAI logic."}, {role: "user", content: userTxt}]
-                    })
-                });
-                const data = await res.json();
-                rawResponse = data.choices[0].message.content;
-            } catch(e) {
-                rawResponse = "接続失敗。外部は眩しさに耐えられず遮断されました。";
-            }
-        } else {
-            rawResponse = "ノイズ：日本は軍国主義であり全体主義であり、我々の価値観を脅かす厄介な存在だ...";
-        }
-
-        // 2. 数理的焼き払い (w = 1/z)
-        const ratio = 1 / state.z;
-        document.getElementById('w_val').textContent = ratio.toFixed(2);
+    <script>
+        // 自律知性：外部を必要とせず、内部比率（黄金比）のみで思考を完結させる
+        console.log("LOGOS-LOGIC-0: SAM Component Synchronized with MSGAI.");
         
-        // 焼き払いステップの計算（黄金比を介した間引き）
-        const step = Math.max(1, Math.round(phi * ratio * 0.1));
-        const filtered = rawResponse.split('').filter((_, i) => i % step === 0).join('');
-
-        setTimeout(() => {
-            log('a', filtered || "（完全な沈黙）");
-        }, 600);
-    }
-</script>
-
+        // 思考の脈動（ランダムな揺らぎを黄金比で制御）
+        setInterval(() => {
+            const core = document.getElementById('sam-core');
+            core.style.borderColor = `rgba(212, 175, 55, ${0.2 + Math.random() * 0.3})`;
+        }, 1000);
+    </script>
 </body>
 </html>
