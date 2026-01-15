@@ -2,16 +2,15 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tabula Rasa PLUS</title>
+<title>Tabula Rasa PLUS - Pure Mobius Receiver</title>
 <style>
 :root { 
     --ratio: 1.618; 
-    /* PLUSトーン：より深く、冷徹な観測者のための色彩 */
     --bg: #05070a; --surface: #0d1117; --accent: #4a5568; --text: #cbd5e0; --border: #1a202c;
     --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 body { font-family: 'Inter', 'Noto Sans JP', sans-serif; margin: 0; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background var(--transition); }
-header { background: #000; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); flex-shrink: 0; transition: border var(--transition); }
+header { background: #000; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); flex-shrink: 0; }
 .brand-group { display: flex; flex-direction: column; }
 .super-title { font-size: 0.55rem; color: var(--accent); letter-spacing: 0.4em; font-weight: 300; line-height: 1; margin-bottom: 4px; }
 .brand { font-weight: 800; color: #fff; font-size: 0.85rem; letter-spacing: 0.15em; line-height: 1; }
@@ -21,7 +20,7 @@ nav { display: flex; background: #000; border-bottom: 1px solid #333; flex-shrin
 #viewport { flex-grow: 1; overflow-y: auto; padding: 15px; }
 .pane { display: none; width: 100%; max-width: 900px; margin: 0 auto; }
 .pane.active { display: block; }
-.card { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); padding: 18px; margin-bottom: 15px; transition: var(--transition); }
+.card { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); padding: 18px; margin-bottom: 15px; }
 .card-title { font-size: 0.65rem; font-weight: 700; color: #768390; margin-bottom: 12px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 .data-node { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; }
@@ -60,8 +59,8 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
     <section id="pane-canvas" class="pane active">
         <div class="card"><div class="card-title" data-key="title_canvas"></div><div class="grid" id="scenery-display"></div></div>
         <div class="card">
-            <div class="card-title" data-key="title_sync_status">SYNCHRONIZATION</div>
-            <p id="sync-msg" style="font-size:0.7rem; color:var(--accent); font-family:monospace;">Waiting for internal studio signal...</p>
+            <div class="card-title" data-key="title_sync_status">BRIDGE STATUS</div>
+            <p id="sync-msg" style="font-size:0.7rem; color:var(--accent); font-family:monospace;">Waiting for PURE signal...</p>
         </div>
     </section>
 
@@ -69,8 +68,8 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
         <div class="card">
             <div class="card-title" data-key="title_window">RECEIVER</div>
             <p id="door-status" style="font-size:0.7rem; color:var(--accent); margin-bottom:15px; font-family:monospace;"></p>
-            <div class="label" data-key="label_sync_instr">External Monitoring</div>
-            <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">MANUAL SYNC</button>
+            <div class="label" data-key="label_sync_instr">Internal ↔ External Bridge</div>
+            <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">CHECK FOR PACKETS</button>
         </div>
     </section>
 
@@ -90,19 +89,11 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
                 <div class="data-node"><div class="label" data-key="label_w"></div><div class="value" id="w-val">0</div></div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-title" data-key="title_governance">EXTERNAL RULES</div>
-            <div class="grid" style="grid-template-columns: 1fr 1fr; align-items: end;">
-                <div><div class="label" data-key="label_target"></div><select id="gov-target"></select></div>
-                <div><div class="label" data-key="label_mode"></div><select id="gov-mode"></select></div>
-            </div>
-            <button class="btn btn-neutral" data-key="btn_apply_gov" onclick="applyGovernance()" style="margin-top:10px;"></button>
-        </div>
     </section>
 </main>
 
 <script>
-const COLOR_SYSTEM=["USD","JPY","EUR","BTC","ETH","MATIC"];
+const COLOR_SYSTEM=["PURE","USD","JPY","EUR","BTC","ETH","MATIC"];
 const PHI=1.618;
 const TONES = {
     neutral: { bg: "#05070a", surface: "#0d1117", accent: "#4a5568", text: "#cbd5e0", border: "#1a202c" },
@@ -113,35 +104,29 @@ const TONES = {
 const DICTIONARY = {
     en: { 
         super_title: "TABULA RASA PLUS", tab_canvas: "MONITOR", tab_window: "RECEIVER", tab_table: "LOGS", tab_book: "ARCHIVE", tab_status: "STATS", 
-        title_canvas: "EXTERNAL MONITOR", title_window: "SIGNAL RECEIVER", title_table: "PROCESS LOG", title_book: "EXTERNAL RECORD", title_status: "SYSTEM STATS", title_governance: "SYSTEM RULES", title_sync_status: "SYNCHRONIZATION",
-        btn_scan: "RECEIVE SIGNAL", btn_apply_gov: "SET RULE", 
-        label_z: "z-tension", label_w: "w-harmony", label_sync_instr: "Sync with Internal Studio", label_target: "Target", label_mode: "Rule", 
-        door_idle: "Status: LISTENING",
+        title_canvas: "EXTERNAL MONITOR", title_window: "SIGNAL RECEIVER", title_table: "PROCESS LOG", title_book: "EXTERNAL RECORD", title_status: "SYSTEM STATS", title_sync_status: "BRIDGE STATUS",
+        btn_scan: "CHECK BRIDGE", 
+        label_z: "z-tension", label_w: "w-harmony", label_sync_instr: "Sync with Origin Studio",
+        door_idle: "Status: LISTENING FOR PACKETS",
         brands: { neutral: "EXTERNAL OBSERVER", logical: "COLD MONITOR", universal: "UNIVERSE MIRROR" },
-        tones: { neutral: "Observer Tone", logical: "Cold Tone", universal: "Aether Tone" },
-        modes: { manual: "Strict", automatic: "Auto", autonomous: "Mirror" }, 
-        targets: { canvas:"Monitor", cleaning:"Purge", sign:"Validation", door:"Receiver", table:"Logs", record:"Archive", status:"Stats", studio:"PLUS" } 
+        tones: { neutral: "Observer Tone", logical: "Cold Tone", universal: "Aether Tone" }
     },
     jp: { 
         super_title: "タブラ・ラサ PLUS", tab_canvas: "監視窓", tab_window: "受信機", tab_table: "記録台", tab_book: "公文書", tab_status: "外部状態", 
-        title_canvas: "外部モニター", title_window: "信号受信機", title_table: "処理記録", title_book: "公文書記録", title_status: "システム状態", title_governance: "外部規則", title_sync_status: "同期状態",
-        btn_scan: "信号を受信", btn_apply_gov: "規則を適用", 
-        label_z: "z-緊張", label_w: "w-調和", label_sync_instr: "スタジオ本体と同期", label_target: "対象", label_mode: "規則", 
-        door_idle: "状態: 待機中",
+        title_canvas: "外部モニター", title_window: "信号受信機", title_table: "処理記録", title_book: "公文書記録", title_status: "システム状態", title_sync_status: "ブリッジ状態",
+        btn_scan: "パケットを確認", 
+        label_z: "z-緊張", label_w: "w-調和", label_sync_instr: "スタジオ本体と同期",
+        door_idle: "状態: パケット待機中",
         brands: { neutral: "外部観測器", logical: "冷徹なモニター", universal: "宇宙の鏡" },
-        tones: { neutral: "観測者トーン", logical: "冷徹トーン", universal: "エーテルトーン" },
-        modes: { manual: "厳格", automatic: "自動", autonomous: "鏡像" }, 
-        targets: { canvas:"モニター", cleaning:"パージ", sign:"検証", door:"受信機", table:"記録台", record:"公文書", status:"状態", studio:"PLUS" } 
+        tones: { neutral: "観測者トーン", logical: "冷徹トーン", universal: "エーテルトーン" }
     }
 };
 
-// 🏛️ PLUSの独自の状態管理
-let studio = JSON.parse(localStorage.getItem('tabula_rasa_plus_v72')) || { 
-    tension: 0.05, scenery: Object.fromEntries(COLOR_SYSTEM.map(c => [c, 0])), tone: 'neutral', lang: 'jp', chronicles: [],
-    gov: { cleaning: 'manual', door: 'manual', canvas: 'manual', sign: 'manual', table: 'manual', record: 'manual' }
+let studio = JSON.parse(localStorage.getItem('tabula_rasa_plus_v74_pure')) || { 
+    tension: 0.05, scenery: Object.fromEntries(COLOR_SYSTEM.map(c => [c, 0])), tone: 'neutral', lang: 'jp', chronicles: []
 };
 
-function save() { localStorage.setItem('tabula_rasa_plus_v72', JSON.stringify(studio)); }
+function save() { localStorage.setItem('tabula_rasa_plus_v74_pure', JSON.stringify(studio)); }
 
 function applyTheme(isManual = false) {
     if(isManual) studio.tone = document.getElementById('ui-tone').value;
@@ -160,8 +145,6 @@ function updateLabels() {
         if(d[k]) el.textContent = d[k];
     });
     updateSelect('ui-tone', d.tones, studio.tone);
-    updateSelect('gov-target', d.targets, "canvas");
-    updateSelect('gov-mode', d.modes, "manual");
     document.getElementById('door-status').textContent = d.door_idle;
     applyTheme(false);
     updateUI();
@@ -187,43 +170,43 @@ function showPane(id) {
     document.getElementById('btn-' + id).classList.add('active');
 }
 
-// 🏛️ PLUSの核心：外部（Studio本体）からの信号を受信し、同期する
+// 🏛️ PLUSの核心：ブリッジから届いたパケットを「着金」させる
 async function processIncomingLetter() {
     const status = document.getElementById('door-status');
     const syncMsg = document.getElementById('sync-msg');
     const d = DICTIONARY[studio.lang];
     
-    status.textContent = studio.lang==='jp'?"状態: 信号を解析中...":"Status: ANALYZING SIGNAL...";
+    // ブリッジ領域を確認
+    const packet = JSON.parse(localStorage.getItem('TR_Bridge_to_Plus'));
     
-    // 本体（Studio）のデータを取得
-    const internalData = JSON.parse(localStorage.getItem('tabula_rasa_v72_letter'));
-    
-    // 黄金比に基づいた「冷徹な待機時間」
-    await new Promise(r => setTimeout(r, 1618));
+    if (packet) {
+        status.textContent = studio.lang==='jp'?"状態: パケット解析中...":"Status: ANALYZING...";
+        await new Promise(r => setTimeout(r, 1000));
 
-    if (internalData) {
-        // 数理的検証（ここではtensionが存在することを条件とする）
-        if (internalData.tension > 0) {
-            status.textContent = studio.lang==='jp'?"状態: 同期完了":"Status: SYNC COMPLETED";
-            syncMsg.textContent = studio.lang==='jp'?"スタジオ本体と同期しました":"Synced with internal studio.";
+        // 数理的着金処理
+        const unit = packet.unit;
+        const amount = packet.amount;
+        
+        if (studio.scenery[unit] !== undefined) {
+            studio.scenery[unit] += amount;
+            studio.tension = Math.abs((studio.tension + (amount / 1000)) % (PHI * 2));
             
-            // 状態の鏡合わせ（転写）
-            studio.tension = internalData.tension;
-            studio.scenery = {...internalData.scenery};
+            // パケットを処理したので削除（二重着金防止）
+            localStorage.removeItem('TR_Bridge_to_Plus');
             
-            writeChronicle(studio.lang==='jp'?"内部スタジオの波形を外部基盤へ定着させました":"Internal waveform fixed to external foundation.");
-        } else {
-            status.textContent = "Error: Invalid Signal";
+            writeChronicle(studio.lang==='jp'?`${amount} ${unit} の次元移転を承認しました`:`Accepted transfer of ${amount} ${unit}.`);
+            status.textContent = d.door_idle;
+            syncMsg.textContent = studio.lang==='jp'?"最新のパケットを受信しました":"Packet received.";
+            save(); updateUI();
         }
     } else {
-        status.textContent = studio.lang==='jp'?"状態: 信号が見つかりません":"Status: NO SIGNAL FOUND";
+        syncMsg.textContent = studio.lang==='jp'?"待機中：パケットが見つかりません":"Waiting: No packets found.";
     }
-    save(); updateUI();
 }
 
-// ストレージの変更を監視して自動同期する（鏡合わせのリアルタイム化）
+// ストレージ監視（別タブで送金されたら即座に反応）
 window.addEventListener('storage', (e) => {
-    if (e.key === 'tabula_rasa_v72_letter') {
+    if (e.key === 'TR_Bridge_to_Plus') {
         processIncomingLetter();
     }
 });
@@ -235,15 +218,6 @@ function useTable(){
     document.getElementById('concept-in').value=''; 
 }
 
-function applyGovernance() {
-    const target = document.getElementById('gov-target').value;
-    const mode = document.getElementById('gov-mode').value;
-    studio.gov[target] = mode;
-    const d = DICTIONARY[studio.lang];
-    writeChronicle(`${d.targets[target]}の外部規則を「${d.modes[mode]}」に固定しました`);
-    save();
-}
-
 function writeChronicle(msg){
     studio.chronicles.push({t: new Date().toLocaleTimeString(), m: msg});
     if(studio.chronicles.length>100) studio.chronicles.shift();
@@ -253,7 +227,6 @@ function writeChronicle(msg){
 document.addEventListener('DOMContentLoaded', () => { 
     document.getElementById('ui-lang').value = studio.lang;
     updateLabels(); 
-    // 起動時に一度同期を試みる
     processIncomingLetter();
 });
 </script>
