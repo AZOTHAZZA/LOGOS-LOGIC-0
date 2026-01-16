@@ -2,10 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tabula Rasa - PORT A</title>
+<title>Tabula Rasa - PURE PORT B</title>
 <style>
-:root { --ratio: 1.618; --bg: #0b0e11; --surface: #15191d; --accent: #6c757d; --text: #e9ecef; --border: #2d333b; --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-body { font-family: 'Inter', 'Noto Sans JP', sans-serif; margin: 0; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+:root { 
+    --ratio: 1.618; 
+    --bg: #05070a; --surface: #0d1117; --accent: #4a5568; --text: #cbd5e0; --border: #1a202c;
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', 'Noto Sans JP', sans-serif; margin: 0; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background var(--transition); }
 header { background: #000; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); flex-shrink: 0; }
 .brand-group { display: flex; flex-direction: column; }
 .super-title { font-size: 0.55rem; color: var(--accent); letter-spacing: 0.4em; font-weight: 300; line-height: 1; margin-bottom: 4px; }
@@ -21,26 +25,23 @@ nav { display: flex; background: #000; border-bottom: 1px solid #333; flex-shrin
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 .data-node { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; }
 .label { font-size: 0.6rem; color: #768390; margin-bottom: 4px; }
-.value { font-family: monospace; font-weight: bold; font-size: 0.9rem; color: var(--text); }
+.value { font-family: monospace; font-weight: bold; font-size: 1rem; color: var(--text); }
 input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #444; border-radius: 6px; background: rgba(0,0,0,0.3); color: #fff; font-size: 0.8rem; outline: none; box-sizing: border-box;}
-.btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.2s; outline: none; margin-top: 5px;}
+.btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem; transition: 0.2s; outline: none; }
 .btn-neutral { background: var(--accent); color: #fff; }
 .btn-danger { background: #a71d2a; color: #fff; }
-.btn-bridge { background: #4a3f35; color: #d4a017; border: 1px solid #d4a017; }
+#console { background: #000; color: #adbac7; padding: 12px; font-family: monospace; font-size: 0.7rem; height: 150px; overflow-y: auto; border-radius: 6px; border: 1px solid var(--border); }
+#chronicle-box { background: rgba(0,0,0,0.3); color: var(--text); padding: 15px; font-family: 'Georgia', serif; font-size: 0.85rem; height: 300px; overflow-y: auto; border-radius: 6px; border: 1px solid var(--border); line-height: 1.6; }
 </style>
 </head>
 <body>
 <header>
     <div class="brand-group">
         <div class="super-title" data-key="super_title">TABULA RASA</div>
-        <div class="brand" id="brand-display" data-key="brand_port_a">PORT A</div>
+        <div class="brand" id="brand-display">PURE PORT B</div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
-        <select id="ui-tone" onchange="applyTheme()" style="width:auto; margin:0; font-size:0.65rem; background:#000; color:#fff; border:1px solid #333;">
-            <option value="neutral">Neutral Tone</option>
-            <option value="logical">Logical Tone</option>
-            <option value="universal">Universal Tone</option>
-        </select>
+        <select id="ui-tone" onchange="applyTheme(true)" style="width:auto; margin:0; font-size:0.65rem; background:#000; color:#fff; border:1px solid #333;"></select>
         <select id="ui-lang" onchange="updateLabels()" style="width:auto; margin:0; font-size:0.65rem; background:#000; color:#fff; border:1px solid #333;">
             <option value="en">English</option>
             <option value="jp" selected>日本語</option>
@@ -48,42 +49,45 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
     </div>
 </header>
 <nav id="main-nav">
-    <button class="tab active" onclick="showPane('canvas')" data-key="tab_canvas">PORT A</button>
-    <button class="tab" onclick="showPane('status')" data-key="tab_status">STATUS</button>
+    <button class="tab active" id="btn-canvas" onclick="showPane('canvas')" data-key="tab_canvas"></button>
+    <button class="tab" id="btn-window" onclick="showPane('window')" data-key="tab_window"></button>
+    <button class="tab" id="btn-table" onclick="showPane('table')" data-key="tab_table"></button>
+    <button class="tab" id="btn-book" onclick="showPane('book')" data-key="tab_book"></button>
+    <button class="tab" id="btn-status" onclick="showPane('status')" data-key="tab_status"></button>
 </nav>
 <main id="viewport">
     <section id="pane-canvas" class="pane active">
-        <div class="card"><div class="card-title" data-key="title_canvas">PORT</div><div class="grid" id="scenery-display"></div></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-            <div class="card">
-                <div class="card-title" data-key="title_vanning">積み込み (Vanning)</div>
-                <select id="color-choice"></select>
-                <div class="label" data-key="label_intensity">Quantity</div>
-                <input type="number" id="brush-intensity" value="100">
-                <div style="display: flex; gap: 5px;">
-                    <button class="btn btn-neutral" data-key="btn_paint_plus" onclick="paintOnCanvas(1)">+</button>
-                    <button class="btn btn-danger" data-key="btn_paint_minus" onclick="paintOnCanvas(-1)">-</button>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-title" data-key="title_sailing">出港 (Sailing)</div>
-                <div class="label" data-key="label_destination">Destination: PORT B</div>
-                <button class="btn btn-bridge" onclick="transferToPlus()" data-key="btn_sailing">出港する (Sailing)</button>
-            </div>
+        <div class="card"><div class="card-title" data-key="title_canvas"></div><div class="grid" id="scenery-display"></div></div>
+        <div class="card">
+            <div class="card-title" data-key="title_sync_status">LOGISTICS STATUS</div>
+            <p id="sync-msg" style="font-size:0.7rem; color:var(--accent); font-family:monospace;">Waiting for Sailing from PORT A...</p>
         </div>
+    </section>
+
+    <section id="pane-window" class="pane">
+        <div class="card">
+            <div class="card-title" data-key="title_window">PORT B</div>
+            <p id="door-status" style="font-size:0.7rem; color:var(--accent); margin-bottom:15px; font-family:monospace;"></p>
+            <div class="label" data-key="label_sync_instr">Arrival & Devanning</div>
+            <button class="btn btn-neutral" data-key="btn_scan" onclick="processIncomingLetter()">CHECK ARRIVAL</button>
+        </div>
+    </section>
+
+    <section id="pane-table" class="pane">
+        <div class="card"><div class="card-title" data-key="title_table"></div><div id="console"></div><input type="text" id="concept-in" placeholder="..." onkeydown="if(event.key==='Enter') useTable()" style="margin-top:10px;"></div>
+    </section>
+
+    <section id="pane-book" class="pane">
+        <div class="card"><div class="card-title" data-key="title_book"></div><div id="chronicle-box"></div></div>
     </section>
 
     <section id="pane-status" class="pane">
         <div class="card">
-            <div class="card-title" data-key="title_status">LOGISTICS STATUS</div>
+            <div class="card-title" data-key="title_status">PORT STATUS</div>
             <div class="grid">
-                <div class="data-node"><div class="label" data-key="label_z">z-Logos</div><div class="value" id="z-val">0</div></div>
-                <div class="data-node"><div class="label" data-key="label_w">w-Logos</div><div class="value" id="w-val">0</div></div>
+                <div class="data-node"><div class="label" data-key="label_z"></div><div class="value" id="z-val">0</div></div>
+                <div class="data-node"><div class="label" data-key="label_w"></div><div class="value" id="w-val">0</div></div>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-title" data-key="title_reset">RESET</div>
-            <button class="btn btn-danger" onclick="executeClean()" data-key="btn_reset">Reset Port</button>
         </div>
     </section>
 </main>
@@ -92,54 +96,45 @@ input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px sol
 const COLOR_SYSTEM=["PURE","USD","JPY","EUR","BTC","ETH","MATIC"];
 const PHI=1.618;
 const TONES = {
-    neutral: { bg: "#0b0e11", surface: "#15191d", accent: "#6c757d", text: "#e9ecef", border: "#2d333b" },
-    logical: { bg: "#050a0f", surface: "#0a141e", accent: "#007bff", text: "#a0d1ff", border: "#1a3a5a" },
-    universal: { bg: "#1a1612", surface: "#2a241e", accent: "#d4a017", text: "#fff4e0", border: "#4a3f35" }
+    neutral: { bg: "#05070a", surface: "#0d1117", accent: "#4a5568", text: "#cbd5e0", border: "#1a202c" },
+    logical: { bg: "#020408", surface: "#080c12", accent: "#2d3748", text: "#a0aec0", border: "#1a202c" },
+    universal: { bg: "#0f0d0b", surface: "#1a1612", accent: "#744210", text: "#ed8936", border: "#2d241e" }
 };
 
 const DICTIONARY = {
     en: { 
-        super_title: "TABULA RASA", 
-        brand_port_a: "PORT A",
-        tab_canvas: "PORT A", tab_status: "STATUS", 
-        title_canvas: "PORT", title_vanning: "Vanning", label_z: "z-Logos", label_w: "w-Logos",
-        btn_paint_plus: "LOAD (+)", btn_paint_minus: "UNLOAD (-)", label_intensity: "Quantity",
-        title_sailing: "Sailing", label_destination: "Destination: PORT B", btn_sailing: "Sailing",
-        title_status: "LOGISTICS STATUS", title_reset: "RESET", btn_reset: "Reset Port"
+        super_title: "TABULA RASA", tab_canvas: "PORT", tab_window: "ARRIVAL", tab_table: "LOGS", tab_book: "ARCHIVE", tab_status: "STATS", 
+        title_canvas: "PORT", title_window: "PURE PORT B", title_table: "LOGISTICS RECORD", title_book: "EXTERNAL RECORD", title_status: "PORT STATUS", title_sync_status: "LOGISTICS STATUS",
+        btn_scan: "CHECK ARRIVAL", 
+        label_z: "z-tension", label_w: "w-harmony", label_sync_instr: "Arrival & Devanning",
+        door_idle: "Status: WAITING FOR ARRIVAL",
+        brands: { neutral: "PURE PORT B", logical: "COLD MONITOR", universal: "UNIVERSE MIRROR" },
+        tones: { neutral: "Observer Tone", logical: "Cold Tone", universal: "Aether Tone" }
     },
     jp: { 
-        super_title: "タブラ・ラサ", 
-        brand_port_a: "港 A (PORT A)",
-        tab_canvas: "港 A (PORT A)", tab_status: "状態", 
-        title_canvas: "港 (PORT)", title_vanning: "積み込み (Vanning)", label_z: "zの数理", label_w: "wの数理",
-        btn_paint_plus: "増加 (+)", btn_paint_minus: "減少 (-)", label_intensity: "数量",
-        title_sailing: "出港 (Sailing)", label_destination: "移動先: 港 B (PORT B)", btn_sailing: "出港する (Sailing)",
-        title_status: "物流の状態", title_reset: "初期化", btn_reset: "港をリセット"
+        super_title: "タブラ・ラサ", tab_canvas: "PORT B", tab_window: "入港", tab_table: "記録台", tab_book: "公文書", tab_status: "外部状態", 
+        title_canvas: "PORT", title_window: "PURE PORT B", title_table: "物流記録", title_book: "公文書記録", title_status: "港湾状態", title_sync_status: "物流の状態",
+        btn_scan: "入港を確認", 
+        label_z: "z-緊張", label_w: "w-調和", label_sync_instr: "入港 (Arrival) ➔ 積み下ろし (Devanning)",
+        door_idle: "状態: 船の到着を待機中",
+        brands: { neutral: "PURE PORT B", logical: "冷徹なモニター", universal: "宇宙の鏡" },
+        tones: { neutral: "観測者トーン", logical: "冷徹トーン", universal: "エーテルトーン" }
     }
 };
 
-let studio = { 
-    tension: 0.05, scenery: Object.fromEntries(COLOR_SYSTEM.map(c => [c, 0])), tone: 'neutral', lang: 'jp'
+let studio = JSON.parse(localStorage.getItem('tabula_rasa_plus_v74_pure')) || { 
+    tension: 0.05, scenery: Object.fromEntries(COLOR_SYSTEM.map(c => [c, 0])), tone: 'neutral', lang: 'jp', chronicles: []
 };
 
-function calculateMobius(z) {
-    const a = 1, b = PHI, c = 1, d = -PHI;
-    const denominator = c * z + d;
-    if (Math.abs(denominator) < 0.0001) return 999.999;
-    return Math.abs((a * z + b) / denominator);
-}
+function save() { localStorage.setItem('tabula_rasa_plus_v74_pure', JSON.stringify(studio)); }
 
-function save() { localStorage.setItem('tabula_rasa_v74_pure', JSON.stringify(studio)); }
-
-function updateUI() {
-    const mz = calculateMobius(studio.tension);
-    document.getElementById('z-val').textContent = mz.toFixed(6);
-    document.getElementById('w-val').textContent = (1 / (mz || 0.001)).toFixed(6);
-    document.getElementById('scenery-display').innerHTML = COLOR_SYSTEM.map(c => `
-        <div class="data-node">
-            <div class="label">${c}</div>
-            <div class="value">${(studio.scenery[c]||0).toFixed(4)}</div>
-        </div>`).join('');
+function applyTheme(isManual = false) {
+    if(isManual) studio.tone = document.getElementById('ui-tone').value;
+    const theme = TONES[studio.tone];
+    const root = document.documentElement;
+    Object.keys(theme).forEach(key => root.style.setProperty(`--${key}`, theme[key]));
+    document.getElementById('brand-display').textContent = DICTIONARY[studio.lang].brands[studio.tone];
+    save();
 }
 
 function updateLabels() {
@@ -149,77 +144,85 @@ function updateLabels() {
         const k = el.getAttribute('data-key');
         if(d[k]) el.textContent = d[k];
     });
-    const sel = document.getElementById('color-choice');
-    sel.innerHTML = '';
-    COLOR_SYSTEM.forEach(c => sel.add(new Option(c, c)));
+    updateSelect('ui-tone', d.tones, studio.tone);
+    document.getElementById('door-status').textContent = d.door_idle;
+    applyTheme(false);
     updateUI();
 }
 
-function applyTheme() {
-    studio.tone = document.getElementById('ui-tone').value;
-    const theme = TONES[studio.tone];
-    const root = document.documentElement;
-    Object.keys(theme).forEach(key => root.style.setProperty(`--${key}`, theme[key]));
-    save();
+function updateSelect(id, list, current) {
+    const sel = document.getElementById(id);
+    if(!sel) return; sel.innerHTML = '';
+    Object.keys(list).forEach(key => { sel.add(new Option(list[key], key)); if(key===current) sel.value=key; });
 }
 
-function paintOnCanvas(sign){
-    const c = document.getElementById('color-choice').value;
-    const v = Math.abs(parseFloat(document.getElementById('brush-intensity').value));
-    if (!isNaN(v)) {
-        const oldVal = studio.scenery[c] || 0;
-        studio.scenery[c] = Math.max(0, oldVal + (v * sign));
-        const actualChange = studio.scenery[c] - oldVal;
-        studio.tension = Math.abs((studio.tension + (actualChange / 1000)) % (PHI * 2));
-        save(); updateUI();
-    }
-}
-
-function transferToPlus() {
-    const c = document.getElementById('color-choice').value;
-    const v = Math.abs(parseFloat(document.getElementById('brush-intensity').value));
-    
-    if (isNaN(v) || v <= 0) { alert(studio.lang==='jp'?"数量を入力してください":"Enter quantity"); return; }
-    if ((studio.scenery[c] || 0) < v) { alert(studio.lang==='jp'?"残高が不足しています":"Insufficient balance"); return; }
-
-    studio.scenery[c] -= v;
-    const transferPacket = {
-        unit: c,
-        amount: v,
-        timestamp: Date.now(),
-        sender: "PORT_A"
-    };
-
-    localStorage.setItem('TR_Bridge_to_Plus', JSON.stringify(transferPacket));
-    save();
-    updateUI();
-    const msg = studio.lang==='jp' 
-        ? `出港完了: ${v} ${c} が 港 B (PORT B) へ向けて航行を開始しました。`
-        : `Sailing started: ${v} ${c} is heading to PORT B.`;
-    alert(msg);
+function updateUI() {
+    document.getElementById('z-val').textContent = studio.tension.toFixed(6);
+    document.getElementById('w-val').textContent = (PHI/(studio.tension||0.001)).toFixed(2);
+    document.getElementById('scenery-display').innerHTML = COLOR_SYSTEM.map(c => `<div class="data-node"><div class="label">${c}</div><div class="value">${(studio.scenery[c]||0).toFixed(4)}</div></div>`).join('');
+    document.getElementById('chronicle-box').innerHTML = studio.chronicles.map(c => `<p><i>[${c.t}]</i> ${c.m}</p>`).reverse().join('');
 }
 
 function showPane(id) {
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
-    event.currentTarget.classList.add('active');
+    document.getElementById('btn-' + id).classList.add('active');
 }
 
-function executeClean() {
-    if(!confirm(studio.lang==='jp'?"港をリセットしますか？":"Reset Port?")) return;
-    studio.scenery = Object.fromEntries(COLOR_SYSTEM.map(c => [c, 0]));
-    studio.tension = 0.05;
-    save(); updateUI();
+async function processIncomingLetter() {
+    const status = document.getElementById('door-status');
+    const syncMsg = document.getElementById('sync-msg');
+    const d = DICTIONARY[studio.lang];
+    
+    const packet = JSON.parse(localStorage.getItem('TR_Bridge_to_Plus'));
+    
+    if (packet) {
+        status.textContent = studio.lang==='jp'?"状態: 積み下ろし中 (Devanning)...":"Status: DEVANNING...";
+        await new Promise(r => setTimeout(r, 1000));
+
+        const unit = packet.unit;
+        const amount = packet.amount;
+        
+        if (studio.scenery[unit] !== undefined) {
+            studio.scenery[unit] += amount;
+            studio.tension = Math.abs((studio.tension + (amount / 1000)) % (PHI * 2));
+            
+            localStorage.removeItem('TR_Bridge_to_Plus');
+            
+            writeChronicle(studio.lang==='jp'?`${amount} ${unit} の積み下ろしを完了しました`:`Completed devanning of ${amount} ${unit}.`);
+            status.textContent = d.door_idle;
+            syncMsg.textContent = studio.lang==='jp'?"コンテナを入荷しました":"Container arrived.";
+            save(); updateUI();
+        }
+    } else {
+        syncMsg.textContent = studio.lang==='jp'?"待機中：船影が見えません":"Waiting: No arrival detected.";
+    }
+}
+
+window.addEventListener('storage', (e) => {
+    if (e.key === 'TR_Bridge_to_Plus') {
+        processIncomingLetter();
+    }
+});
+
+function useTable(){ 
+    const input=document.getElementById('concept-in').value; if(!input)return;
+    document.getElementById('console').innerHTML+=`<div>> ${input}</div>`;
+    writeChronicle((studio.lang==='jp'?`記録: ${input}`:`Log: ${input}`));
+    document.getElementById('concept-in').value=''; 
+}
+
+function writeChronicle(msg){
+    studio.chronicles.push({t: new Date().toLocaleTimeString(), m: msg});
+    if(studio.chronicles.length>100) studio.chronicles.shift();
+    updateUI();
 }
 
 document.addEventListener('DOMContentLoaded', () => { 
-    const saved = localStorage.getItem('tabula_rasa_v74_pure');
-    if(saved) studio = JSON.parse(saved);
     document.getElementById('ui-lang').value = studio.lang;
-    document.getElementById('ui-tone').value = studio.tone;
-    updateLabels();
-    applyTheme();
+    updateLabels(); 
+    processIncomingLetter();
 });
 </script>
 </body>
